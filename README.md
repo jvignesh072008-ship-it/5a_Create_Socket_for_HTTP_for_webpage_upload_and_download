@@ -15,7 +15,48 @@ To write a PYTHON program for socket for HTTP for web page upload and download
 <BR>
 6.Stop the program
 <BR>
-## Program 
+## Program
+```
+import socket
+import webbrowser
+import os
+def send_request(host, port, request):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        s.sendall(request.encode())
+        response = b""
+        while True:
+            data = s.recv(4096)
+            if not data:
+                break
+            response += data
+    return response.decode(errors="ignore")
+def download_and_open(host, port):
+    request = f"GET / HTTP/1.1\r\nHost: {host}\r\nConnection: close\r\n\r\n"
+    response = send_request(host, port, request)
+    html = response.split("\r\n\r\n",1)[1]
+    filename = "page.html"
+    with open(filename, "w", encoding="utf-8") as f:
+        f.write(html)
+    print("HTML page saved.")
+    path = os.path.abspath(filename)
+    webbrowser.open("file://" + path)
+    print("Opened in browser.")
+
+if __name__ == "__main__":
+    host = "example.com"
+    port = 80
+    download_and_open(host, port)
+```
 ## OUTPUT
+<img width="1920" height="1080" alt="Screenshot 2026-05-22 112015" src="https://github.com/user-attachments/assets/fbc8c3e3-8277-44a7-b9d6-b3f54a21127d" />
+<img width="1920" height="1080" alt="Screenshot 2026-05-22 112038" src="https://github.com/user-attachments/assets/804ad70d-8a4e-4652-ac46-bf2fb505403e" />
+<img width="1920" height="1080" alt="Screenshot 2026-05-22 112049" src="https://github.com/user-attachments/assets/3bcd2f1a-07aa-4758-9ba3-8477c0bfba86" />
+
+
+
+
+
+
 ## Result
 Thus the socket for HTTP for web page upload and download created and Executed
